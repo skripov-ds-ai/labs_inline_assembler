@@ -1,5 +1,7 @@
 // Copyright (c) 2017 Denis Skripov
 // https://github.com/nizhikebinesi/labs_inline_assembler
+#define _USE_MATH_DEFINES
+
 #include <cstdio>
 #include <memory>
 #include <cstdlib>
@@ -9,6 +11,7 @@
 #include <cassert>
 #include <vector>
 #include <string>
+#include <cmath>
 // including
 // my own modules
 #include "first_exercise.h"
@@ -28,29 +31,239 @@ const int BUFFER_SIZE = 256;
 using namespace std;
 
 double tangent(double x, double epsilon = 1e-5) {
-	const int n = 5, k = 3;
-	double xx;
+	const int m = 15, n = 2, k = 3;
+	const double left = -M_PI_2, right = M_PI_2;
+	
+	//double xx;
 	__asm {
 		finit
+		xor		eax, eax
+		xor		ebx, ebx // флаг, является ли число отрицательным
 
+		fld		qword ptr epsilon // 0 eps
+		fld		qword ptr x // 1 x
+
+		// сравниваем с нулем
+		fldz
+
+		fcomp
+		xor		eax, eax
+		fstsw	ax
+		sahf
+
+		jna		NON_NEGATIVE
+
+		mov		ebx, 1
+		fchs
+
+	NON_NEGATIVE:
+		fld		qword ptr right
+
+		fcom
+		// xor		eax, eax
+		fstsw	ax
+		sahf
+
+		jb		RIGHT_LOOP		
+		
+		//fld		qword ptr left
+
+		//fcom
+		//xor		eax, eax
+		//fstsw	ax
+		//sahf
+
+		//jna		LEFT_LOOP
+
+		jmp		NEXT_LEFT
+
+		//jmp		CALCULATE
+
+	RIGHT_LOOP:
+
+		fsub	st(1), st(0)
+		fsub	st(1), st(0)
+		fcom
+		// xor		eax, eax
+		fstsw	ax
+		sahf
+		ja		NEXT_RIGHT
+
+		jmp		RIGHT_LOOP
+	NEXT_RIGHT:
+		fstp	st(0)
+		jmp		CALCULATE
+
+	LEFT_LOOP:
+
+		fsub	st(1), st(0)
+		fsub	st(1), st(0)
+		fcom
+		//xor		eax, eax
+		fstsw	ax
+		sahf
+		jb		NEXT_LEFT
+
+		jmp		LEFT_LOOP
+
+	NEXT_LEFT:
+		fstp	st(0)
+		jmp		CALCULATE
+
+	CALCULATE:
+
+		fld		st(2) // 2 eps
+		//fld		qword ptr epsilon
+
+		fcomp // 2 eps -> erase
+		fstsw	ax
+		sahf
+		jnb		FIRST_FINAL
+
+		fld		st(0) // 2 x
+		fld		st(0) // 3 x
+		fmul	st(0), st(1) // 4 x^2
+		fld		st(0) // 4 x^2
+		fmul	st(0), st(2) // 5 x^3
+
+		fld		st(0)
+		fild	dword ptr k
+		fdivp	st(1), st(0)
+		fadd	st(4), st(0)
+
+		fld		st(5)
+		//fld		qword ptr epsilon
+
+		fcomp
+		fstsw	ax
+		sahf
+		ja		SECOND_FINAL
+
+		fstp	st(0)
+
+		fld		st(0) // 5 x^3
+		fmul	st(0), st(2) // 5 x^5
+		fild	dword ptr n // 6 n
+		fmulp	st(1), st(0) // 5 (n * x^5)
+		fild	dword ptr m // 6 m
+		fdivp	st(1), st(0) // 5 (n * x^5 / m)
+		faddp	st(4), st(0) // 
+		fstp	st(0)
+		fxch	st(2)
+		//fstp	st(0)
+		jmp		FINAL
+
+	FIRST_FINAL:
+		jmp		FINAL
+
+	SECOND_FINAL:
+		fxch	st(4)
+		jmp		FINAL
+
+	FINAL:
+
+		cmp		ebx, 1
+		je		NEGATIVE
+		jmp		FIN
+	NEGATIVE:
+		fchs
+		jmp		FIN
+	FIN:
+
+	}
+	/*
+	// валидный код
+	__asm {
+		finit
+		fld		qword ptr x // 0 x
+		fld		st(0) // 1 x
+		fmul	st(0), st(1) // 1 x^2
+		fld		st(0) // 2 x^2
+		fmul	st(0), st(2) // 2 x^3
+		fld		st(0) // 3 x^3
+		fmul	st(0), st(2) // 3 x^5
+		fild	dword ptr n // 4 n
+		fmulp	st(1), st(0) // 3 (n * x^5)
+		fild	dword ptr m // 4 m
+		fdivp	st(1), st(0) // 3 (n * x^5 / m)
+		faddp	st(3), st(0) // 
+		fild	dword ptr k // 4 k
+		fdivp	st(1), st(0) // 3 (x^3 / k)
+		faddp	st(2), st(0) // 2 (sum)
+		fstp	st(0)
+	}*/
+
+	/*__asm {
+		finit
+		
+		fld		qword ptr x // result
+		
 		//fld		qword ptr epsilon // eps
 		fld		qword ptr x // x
 		fld		qword ptr x // x
+		
+		fldz // 0
+		fadd	st(0), st(1) // x
+		fld		qword ptr epsilon
+		fcomp	st(1)
+		fstsw	ax
+
+		jmp		FINAL
+
+		ja		FIRST
+
+
 		fmul	st(0), st(1) // x^2
 
-		fld		1 // 1
+		fld1 // 1
 		fmul	st(0), st(1) // x^2
 		fmul	st(0), st(2) // x^3
 
-		fld		1 // 1
+		fldz // 0
+		fadd	st(0), st(1) // x^3
+
+		fild	k // 3
+		fdivp	st(1), st(0) // (x^3)/3
+		
+		fld		qword ptr epsilon
+		fcomp	st(1) // eps - st(1)
+		fstsw	ax
+
+		faddp	st(4), st(0)
+
+		ja		SECOND
+
+		fstp	st(0)
+
+		fld1 // 1
 		fmul	st(0), st(1) // x^3
 		fmul	st(0), st(2) // x^5
 
+		fild	n
+		fmulp	st(1), st(0)
+		fild	m
+		fdivp	st(1), st(0)
+
+		faddp	st(4), st(0)
+
+		jmp		THIRD
+
+	FIRST:
+		fld		st(2)
+		jmp		FINAL
+
+	SECOND:
+		fld		st(4)
+		jmp		FINAL
+
+	THIRD:
+		fld		st(3)
+		jmp		FINAL
+
+	FINAL:
 
 
-
-
-	}
+	}*/
 }
 
 char* string_generator(int size) {
@@ -141,12 +354,24 @@ int main(void) {
 
 	//printf, scanf from __asm and make 
 
-	/* роме   того,  программа  должна  иметь  "дружелюбный"
+	/* Кроме   того,  программа  должна  иметь  "дружелюбный"
 	интерфейс   (например, предлагать  выполнить  повторное  тестирование).  ¬вод
 	данных   из   файла    не  требуетс¤,   хот¤   приветствуетс¤.  ¬вод/вывод  с
 	консоли   выполн¤ть   с  помощью функций  printf  и  scanf,   вызов   которых
 	тоже  должен  происходить   внутри ассемблерных вставок.*/
-	char *welcome = "Welcome!\n";
+	
+	//cout << ((unsigned int)7 | (~(unsigned int)125 << (unsigned int)3)) << endl;
+
+	const double eps = 1e-1;
+
+	//for (double a = -M_PI; a < M_PI; a += eps) {
+		double res = tangent(-atan(1));
+		cout << "my_function = " << res << "\n";
+		cout << "original_tan = " << tan(-atan(1)) << "\n";
+		//system("pause");
+	//}
+
+	/*char *welcome = "Welcome!\n";
 	char *test_text_1 = "\nEnter the string in which you want to search for:\n";
 	char *test_text_2 = "\nEnter the string which you want to search:\n";
 	char *error_become = "\nThere is some error with memory\n";
@@ -336,7 +561,7 @@ int main(void) {
 			call	dword ptr system
 			add		esp, 4
 			EXIT:
-	}
+	}*/
 
 
 	//test_index_of();

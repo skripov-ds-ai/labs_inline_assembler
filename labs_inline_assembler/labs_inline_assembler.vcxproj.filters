@@ -27,6 +27,9 @@
     <ClCompile Include="first_exercise.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="test_exercises.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="second_exercise.h">
@@ -36,6 +39,9 @@
       <Filter>Файлы исходного кода</Filter>
     </ClInclude>
     <ClInclude Include="first_exercise.h">
+      <Filter>Файлы исходного кода</Filter>
+    </ClInclude>
+    <ClInclude Include="test_exercises.h">
       <Filter>Файлы исходного кода</Filter>
     </ClInclude>
   </ItemGroup>
