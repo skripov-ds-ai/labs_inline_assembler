@@ -1370,24 +1370,105 @@ void second_t() {
 	}
 }
 
-void f(Matrix **a) {
+/*void f(Matrix **a) {
 	*a = create_matrix(3);
 	//a->arr[0][0] = 45;
-}
+}*/
 
 int main(void) {
-	
-	second_t();
 
-	//Matrix **a = nullptr;
-	//a = create_matrix(1);
-	//f1(a);
-	//cout << a << endl << endl;
-	//f1(a);
-	//print_to_stdout(*a);
-	//f5(a);
-	//erase_matrix(a);
-	/*int x = 0, y = 0;
+	/*{
+		//cout << "\n\nthird" << "\n";
+		char
+			*str1 = "Enter x:\n",
+			*str2 = "Enter eps:\n",
+			*fmt = "%lf",
+			*ans = "answer = %lf\n";
+		// tangent(x, eps);
+		double x, eps, answer;
+		__asm {
+			//finit
+			mov		eax, dword ptr str1
+			push	eax
+			call	dword ptr printf
+			add		esp, 4
+
+			lea		eax, x
+			push	eax
+			mov		eax, dword ptr fmt
+			push	eax
+
+			// scanf x
+			call	dword ptr scanf_s
+			add		esp, 8
+
+			finit
+			jmp		DEFAULT
+			
+		DEFAULT :
+			sub		esp, 8
+			fld		x
+			fstp	qword ptr [esp]
+			call	tangent
+			add		esp, 8
+			jmp		PRINT_ANSWER
+
+		PRINT_ANSWER :
+			
+			sub		esp, 8
+			fstp	qword ptr [esp]
+			mov		eax, dword ptr ans
+			push	eax
+			call	printf
+			add		esp, 12
+		}
+	}*/
+
+	/*double x = 42.42;
+	char *fmt = "%lf";
+	__asm {
+		
+		//finit
+
+		lea		eax, x
+		push	eax
+
+		mov		eax, dword ptr fmt
+		push	eax
+
+		call	scanf_s
+
+		//fstp	x
+
+		//call	printf
+
+		add		esp, 8
+	
+		finit
+		// lea		eax, x
+		// push	 eax
+		//push	x
+		
+
+		sub		esp, 8
+		fld		x
+		fstp	qword ptr [esp]
+		call	tangent
+		add		esp, 8
+
+		sub		esp, 8
+		fstp	qword ptr[esp]
+
+		mov		eax, dword ptr fmt
+		push	eax
+
+		call	printf
+		add		esp, 12
+	}*/
+
+	//printf(fmt, x);
+
+	int x = 0, y = 0, punkt = 0;
 	
 	vector<test_exercises::test_exercise *> tests = test_punkts();
 
@@ -1416,7 +1497,7 @@ int main(void) {
 		}
 		punkt_move(ch, MOD, menu, hConsole, x, y, punkt);
 		do_punkt(ch, x, y, punkt, hConsole, tests, before, menu);
-	}*/
+	}
 	//srand(7);
 	//srand(time(NULL));
 	/*char *src = "10123", *tgt = "123";

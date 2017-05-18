@@ -207,6 +207,8 @@ namespace test_exercises {
 		}
 	}
 
+	void second_t();
+
 	void test_second() {
 		__asm {
 			call	dword ptr second_t
@@ -215,7 +217,101 @@ namespace test_exercises {
 	}
 
 	void test_third() {
-		cout << "\n\nthird" << "\n";
+		//cout << "\n\nthird" << "\n";
+		char 
+			*str1 = "Enter x:\n",
+			*str2 = "Enter eps:\n",
+			*fmt = "%lf",
+			*ans = "answer = %lf\n";
+		// tangent(x, eps);
+		double x, eps, answer;
+		__asm {
+			finit
+			mov		eax, dword ptr str1
+			push	eax
+			call	dword ptr printf
+			add		esp, 4
+
+			lea		eax, x
+			push	eax
+			mov		eax, dword ptr fmt
+			push	eax
+
+			// scanf x
+			call	dword ptr scanf_s
+			add		esp, 8
+
+			mov		eax, dword ptr str2
+			push	eax
+			call	dword ptr printf
+			add		esp, 4
+
+			lea		eax, eps
+			push	eax
+			mov		eax, dword ptr fmt
+			push	eax
+
+			// scanf eps
+			call	dword ptr scanf_s
+			add		esp, 8
+
+
+			// проверка eps <= 0 или нет
+			// если <= 0 -> default eps
+			//finit
+			fld		eps
+			fldz
+			xor		eax, eax
+			// 0 - eps
+			fcomp
+			fstsw	ax
+			sahf
+			jge		DEFAULT
+			jmp		WITH_EPS
+
+		DEFAULT:
+			//lea		eax, x
+			//push	qword ptr [eax]
+			sub		esp, 8
+			fld		x
+			fstp	qword ptr [esp]
+			
+			call	tangent
+			add		esp, 8
+			jmp		PRINT_ANSWER
+		
+		WITH_EPS:
+			sub		esp, 8
+			fld		eps
+			fstp	qword ptr [esp]
+			sub		esp, 8
+			fld		x
+			fstp	qword ptr[esp]
+			//lea		eax, eps
+			//push	qword ptr [eax]
+			//lea		eax, x
+			//push	qword ptr [eax]
+			call	tangent
+			add		esp, 16
+			jmp		PRINT_ANSWER
+
+		PRINT_ANSWER:
+			//
+			//sub		esp, 8
+			//fld		x
+			//fstp	qword ptr[esp]
+			//
+			sub		esp, 8
+			fstp		qword ptr [esp]
+			//fstp		qword ptr [esp]
+			//fst		answer
+			//lea		eax, answer
+			//push	qword ptr [eax]
+			mov		eax, dword ptr ans
+			push	eax
+			call	printf
+			add		esp, 12
+		}
 	}
 
 	int is_nil(Matrix *m) {
@@ -244,6 +340,10 @@ namespace test_exercises {
 		}
 		//return false;
 	}
+
+	/*void f(Matrix &*x) {
+
+	}*/
 
 	Matrix* f1(/*Matrix *a*/) {
 		char
@@ -391,13 +491,13 @@ namespace test_exercises {
 			call	dword ptr printf
 			add		esp, 4
 			jmp		FINAL
-			NIL :
+		NIL :
 			mov		eax, s1
-				push	eax
-				call	dword ptr printf
-				add		esp, 4
-				jmp		FINAL
-				FINAL :
+			push	eax
+			call	dword ptr printf
+			add		esp, 4
+			jmp		FINAL
+		FINAL :
 		}
 	}
 
@@ -1309,7 +1409,10 @@ namespace test_exercises {
 				jmp		BEGIN
 
 				EXIT :
-			add		esp, 8
+			call	dword ptr erase_matrix
+			add		esp, 4
+			call	dword ptr erase_matrix
+			add		esp, 4
 		}
 	}
 

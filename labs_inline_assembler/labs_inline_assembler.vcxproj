@@ -147,8 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="first_exercise.cpp" />
-    <ClCompile Include="main2.cpp" />
-    <ClCompile Include="main1.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="second_exercise.cpp" />
     <ClCompile Include="test_exercises.cpp" />
     <ClCompile Include="third_exercise.cpp" />
