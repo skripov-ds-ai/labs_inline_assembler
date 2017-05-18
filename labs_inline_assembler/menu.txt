@@ -1,0 +1,4 @@
+1) First exercise
+2) Second exercise
+3) Third exercise
+4) EXIT

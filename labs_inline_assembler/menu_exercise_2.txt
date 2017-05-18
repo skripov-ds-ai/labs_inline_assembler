@@ -1,0 +1,14 @@
+0) EXIT
+1) Create a matrix
+2) Read a matrix from stdin(& create)
+3) Set a (i, j) element
+4) Erase a matrix
+5) Print a matrix
+6) (Optional) Is a matrix null?
+7) Create b matrix
+8) Read b matrix from stdin(& create)
+9) Set b (i, j) element
+10) Erase b matrix
+11) Print b matrix
+12) (Optional) Is b matrix null?
+13) (Variant) product of a and b (c = a * b; return new Matrix)

@@ -46,4 +46,5 @@ namespace exercises {
 
 	Matrix* mult(const Matrix* b, const Matrix* a);
 
+	bool is_nil_matrix(Matrix* m);
 }

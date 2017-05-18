@@ -299,13 +299,21 @@ namespace exercises {
 	}
 
 	Matrix* read_from_stdin() {
-		char* fmt1 = "%ud";
+		char 
+			*fmt1 = "%ud", 
+			*str1 = "Enter matrix size:\n",
+			*str2 = "Enter matrix elements:\n";
 		unsigned int n;
 		__asm {
 			lea		eax, n
 			push	eax
 			mov		eax, dword ptr fmt1
 			push	eax
+
+			mov		eax, dword ptr str1
+			push	eax
+			call	dword ptr printf
+			add		esp, 4
 
 			call	dword ptr scanf_s
 
@@ -315,6 +323,11 @@ namespace exercises {
 
 			shl		eax, 2
 			jc		OVER_FLOW
+
+			mov		eax, dword ptr str2
+			push	eax
+			call	dword ptr printf
+			add		esp, 4
 
 			call	dword ptr create_matrix
 
@@ -402,12 +415,16 @@ namespace exercises {
 	void print_to_stdout(const Matrix* m) {
 		char* fmt2 = "%d ";
 		char* fmt3 = "\n";
+		char* nil = "null\n";
 		int temp;
 		__asm {
 
 			mov		eax, m
 
-			mov		ecx, dword ptr[eax]
+			cmp		eax, 0
+			je		NILL
+
+			mov		ecx, dword ptr [eax]
 
 			push	ecx
 
@@ -477,6 +494,12 @@ namespace exercises {
 
 			add		esp, 8
 			jmp		FINAL
+
+		NILL:
+			mov		eax, nil
+			push	eax
+			call	dword ptr printf
+			add		esp, 4
 
 		FINAL:
 
@@ -639,4 +662,28 @@ namespace exercises {
 		}
 	}
 
+	/*bool is_nil_matrix(Matrix* m) {
+		// if m is null or have m.n = 0 -> 1
+		// else -> 0
+		__asm {
+			mov		ebx, m
+			cmp		ebx, 0
+			je		NIL
+			mov		edx, dword ptr[ebx]
+			cmp		edx, 0
+			je		NIL
+			add		ebx, 4
+			mov		ebx, dword ptr[edx]
+			cmp		ebx, 0
+			je		NIL
+
+			xor		eax, eax
+
+			jmp		FINAL
+			NIL :
+			mov		eax, 1
+				jmp		FINAL
+				FINAL :
+		}
+	}*/
 }

@@ -147,16 +147,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="first_exercise.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main2.cpp" />
+    <ClCompile Include="main1.cpp" />
     <ClCompile Include="second_exercise.cpp" />
     <ClCompile Include="test_exercises.cpp" />
     <ClCompile Include="third_exercise.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_exercise.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="second_exercise.h" />
     <ClInclude Include="test_exercises.h" />
     <ClInclude Include="third_exercise.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="labs_inline_assembler.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

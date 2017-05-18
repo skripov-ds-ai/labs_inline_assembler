@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="second_exercise.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -28,6 +25,12 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="test_exercises.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="main1.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="main2.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,5 +47,13 @@
     <ClInclude Include="test_exercises.h">
       <Filter>Файлы исходного кода</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="labs_inline_assembler.rc">
+      <Filter>Файлы ресурсов</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
