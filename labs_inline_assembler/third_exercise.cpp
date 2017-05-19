@@ -5,8 +5,9 @@
 namespace exercises {
 	double tangent(double x, double epsilon) {
 		const int m = 15, n = 2, k = 3;
-		const double right = M_PI_2;
-
+		const double right = M_PI_2, my_pi = M_PI;
+		double temp, xx, n_x;
+		short fsttmp;
 		//double xx;
 		__asm {
 			finit
@@ -32,61 +33,25 @@ namespace exercises {
 		NON_NEGATIVE:
 			fld		qword ptr right
 
-			fcom
-			// xor		eax, eax
+			fcomp
 			fstsw	ax
 			sahf
 
 			jb		RIGHT_LOOP
-
-			//fld		qword ptr left
-
-			//fcom
-			//xor		eax, eax
-			//fstsw	ax
-			//sahf
-
-			//jna		LEFT_LOOP
-
-			jmp		NEXT_LEFT
-
-			//jmp		CALCULATE
-
-		RIGHT_LOOP:
-
-			fsub	st(1), st(0)
-			fsub	st(1), st(0)
-			fcom
-			// xor		eax, eax
-			fstsw	ax
-			sahf
-			ja		NEXT_RIGHT
-
-			jmp		RIGHT_LOOP
-		NEXT_RIGHT:
-			fstp	st(0)
-			jmp		CALCULATE
-
-		LEFT_LOOP:
-
-			fsub	st(1), st(0)
-			fsub	st(1), st(0)
-			fcom
-			//xor		eax, eax
-			fstsw	ax
-			sahf
-			jb		NEXT_LEFT
-
-			jmp		LEFT_LOOP
-
-		NEXT_LEFT:
-			fstp	st(0)
 			jmp		CALCULATE
 				
+		RIGHT_LOOP:
+			fld		my_pi // load PI
+			fxch	st(1)
+			fprem
+			fxch	st(1)
+			fstp	st(0)
+		NEXT_RIGHT:
+			jmp		CALCULATE
+								
 		CALCULATE :
 
 			fld		st(2) // 2 eps
-			//fld		qword ptr epsilon
 
 			fcomp // 2 eps -> erase
 			fstsw	ax
@@ -105,7 +70,6 @@ namespace exercises {
 			fadd	st(4), st(0)
 
 			fld		st(5)
-			//fld		qword ptr epsilon
 
 			fcomp
 			fstsw	ax
@@ -123,7 +87,6 @@ namespace exercises {
 			faddp	st(4), st(0) // 
 			fstp	st(0)
 			fxch	st(2)
-			//fstp	st(0)
 			jmp		FINAL
 
 		FIRST_FINAL:

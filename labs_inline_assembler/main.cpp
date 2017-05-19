@@ -2,6 +2,8 @@
 // https://github.com/nizhikebinesi/labs_inline_assembler
 #define _USE_MATH_DEFINES
 
+// допиши exercise3, округления, деление и т.п.
+
 #include <cstdio>
 #include <memory>
 #include <cstdlib>
@@ -1426,6 +1428,7 @@ int main(void) {
 
 	/*double x = 42.42;
 	char *fmt = "%lf";
+	int fsttmp;
 	__asm {
 		
 		//finit
@@ -1445,12 +1448,38 @@ int main(void) {
 		add		esp, 8
 	
 		finit
-		// lea		eax, x
+
+		fld		x
+		fnstcw	fsttmp
+		and		fsttmp, 1111001111111111b
+		or fsttmp, 0000110000000000b // or []?
+		//or		[fsttmp], 0C00h // устанавливаем RC = 11
+		fldcw	fsttmp
+		frndint 
+		sub		esp, 8
+		fstp	qword ptr[esp]
+
+		mov		eax, dword ptr fmt
+		push	eax
+
+		call	printf
+		add		esp, 12
+		/*fnstcw	fsttmp
+		and		fsttmp, 1111001111111111b
+		or fsttmp, 0000000000000000b // очистка разрядов RC
+		fldcw	fsttmp
+		fld		my_pi // load PI
+		fmulp	st(1), st(0) // = [x / PI] * PI
+		fld		xx // load xx
+		fsub	st(0), st(1) // st(0) = xx - [x / PI] * PI   
+		fxch	st(1) // st(1) = xx - [x / PI] * PI   
+		fstp	st(0) // delete st(0)
+		// lea		eax, x*/
 		// push	 eax
 		//push	x
 		
 
-		sub		esp, 8
+		/*sub		esp, 8
 		fld		x
 		fstp	qword ptr [esp]
 		call	tangent

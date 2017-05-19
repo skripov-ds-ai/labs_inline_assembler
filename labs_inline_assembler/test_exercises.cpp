@@ -2,6 +2,7 @@
 #include "first_exercise.h"
 #include "second_exercise.h"
 #include "third_exercise.h"
+#include <cmath>
 
 namespace test_exercises {
 	using std::cout;
@@ -33,19 +34,7 @@ namespace test_exercises {
 		char *for_exit = "%c";
 		char *flush_first = FLUSH_FIRST;// "%*[^\n]";//"%*[^\n]%*c";
 		char *flush_second = FLUSH_SECOND;//"%*c";
-		//%*[^\n]
-
-		// проблемы когда src не ввели, а tgt ввели
-
-		//char scanf_fmt[] = "%c";
-		//char printf_fmt[] = "%c\n";
-
-		//int id = 2;
-
-		//if (id != 1) {
-
-		//}
-		//else
+		
 		_asm
 		{
 
@@ -209,6 +198,10 @@ namespace test_exercises {
 
 	void second_t();
 
+	double tg(double x) {
+		return tan(x);
+	}
+
 	void test_second() {
 		__asm {
 			call	dword ptr second_t
@@ -218,13 +211,16 @@ namespace test_exercises {
 
 	void test_third() {
 		//cout << "\n\nthird" << "\n";
+		
 		char 
 			*str1 = "Enter x:\n",
 			*str2 = "Enter eps:\n",
 			*fmt = "%lf",
-			*ans = "answer = %lf\n";
+			*ans = "answer = %lf\n",
+			*rl = "real = %lf\n",
+			*dt = "delta = %lf\n";
 		// tangent(x, eps);
-		double x, eps, answer;
+		double x, eps, answer, real, delta;
 		__asm {
 			finit
 			mov		eax, dword ptr str1
@@ -270,8 +266,6 @@ namespace test_exercises {
 			jmp		WITH_EPS
 
 		DEFAULT:
-			//lea		eax, x
-			//push	qword ptr [eax]
 			sub		esp, 8
 			fld		x
 			fstp	qword ptr [esp]
@@ -287,28 +281,42 @@ namespace test_exercises {
 			sub		esp, 8
 			fld		x
 			fstp	qword ptr[esp]
-			//lea		eax, eps
-			//push	qword ptr [eax]
-			//lea		eax, x
-			//push	qword ptr [eax]
 			call	tangent
 			add		esp, 16
 			jmp		PRINT_ANSWER
 
 		PRINT_ANSWER:
-			//
-			//sub		esp, 8
-			//fld		x
-			//fstp	qword ptr[esp]
-			//
 			sub		esp, 8
-			fstp		qword ptr [esp]
-			//fstp		qword ptr [esp]
-			//fst		answer
-			//lea		eax, answer
-			//push	qword ptr [eax]
+			fst		answer
+			fstp	qword ptr [esp]
 			mov		eax, dword ptr ans
 			push	eax
+			call	printf
+			add		esp, 12
+
+			sub		esp, 8
+			fld		x
+			fstp	qword ptr [esp]
+			call	tg
+			add		esp, 8
+
+			sub		esp, 8
+			fst		qword ptr [esp]
+			mov		eax, rl
+			push	eax
+			call	printf
+			add		esp, 12
+
+			//fst		real
+
+			fld		answer
+			sub		esp, 8
+			fsub	st(0), st(1)
+			fabs
+			fstp	qword ptr [esp]//delta
+			mov		eax, dt
+			push	eax
+
 			call	printf
 			add		esp, 12
 		}
